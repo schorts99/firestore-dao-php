@@ -32,8 +32,8 @@ abstract class FirestoreDAO extends DAO
 
     $this->collection = $collection;
     $this->firestoreEntityFactory = new FirestoreEntityFactory(
-      $collection->name(),
-      $logger ? $logger->child(['collectionName' => $collection->name()]) : null
+      $collection->id(),
+      $logger ? $logger->child(['collectionName' => $collection->id()]) : null
     );
     $this->logger = $logger;
   }
