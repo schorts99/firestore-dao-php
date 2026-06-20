@@ -1,0 +1,23 @@
+{
+  "name": "schorts/firestore-dao",
+  "description": "A type-safe, domain-driven Data Access Object (DAO) abstraction for Google Cloud Firestore in PHP. Provides consistent CRUD operations, soft/hard delete support, criteria-based queries, and transaction-aware Unit of Work integration, built on top of the schorts/shared-kernel.",
+  "type": "library",
+  "license": "LGPL-3.0-or-later",
+  "autoload": {
+    "psr-4": {
+      "Schorts\\FirestoreDAO\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Jorge Castillo",
+      "email": "schorts@outlook.com"
+    }
+  ],
+  "require": {
+    "schorts/shared-kernel": "^0.6.0",
+    "google/cloud-core": "^1.72",
+    "mjaschen/phpgeo": "^5.0",
+    "google/cloud-firestore": "^2.1"
+  }
+}
