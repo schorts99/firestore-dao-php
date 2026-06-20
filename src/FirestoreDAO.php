@@ -17,7 +17,7 @@ use Schorts\FirestoreDAO\Entity\EntityFirestoreFactory;
 use Schorts\FirestoreDAO\UnitOfWork\FirestoreTransactionUnitOfWork;
 use Schorts\FirestoreDAO\Query\FirestoreCriteriaQueryExecutor;
 
-final abstract class FirestoreDAO extends DAO
+abstract class FirestoreDAO extends DAO
 {
   private CollectionReference $collection;
   private FirestoreEntityFactory $firestoreEntityFactory;
