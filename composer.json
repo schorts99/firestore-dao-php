@@ -20,7 +20,7 @@
     "google/cloud-firestore": "^2.1"
   },
   "require-dev": {
-    "schorts/shared-kernel": "^0.7.0"
+    "schorts/shared-kernel": "^0.7.1"
   },
   "suggest": {
     "schorts/shared-kernel": "Required in consuming apps to provide EntityRegistry and domain contracts"

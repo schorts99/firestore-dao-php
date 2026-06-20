@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a0d34c14d6cdc4d04f77ffc344e0c72a",
+    "content-hash": "ee23f35e153b07b3a2a127261b5487ee",
     "packages": [
         {
             "name": "brick/math",
@@ -1808,16 +1808,16 @@
     "packages-dev": [
         {
             "name": "schorts/shared-kernel",
-            "version": "v0.7.0",
+            "version": "v0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schorts99/shared-kernel-php.git",
-                "reference": "44e9ff2a0021b6d304becfaa45569c89bd15d97b"
+                "reference": "21530d9a68c714f32be37249dbcd77416c6bcc81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schorts99/shared-kernel-php/zipball/44e9ff2a0021b6d304becfaa45569c89bd15d97b",
-                "reference": "44e9ff2a0021b6d304becfaa45569c89bd15d97b",
+                "url": "https://api.github.com/repos/schorts99/shared-kernel-php/zipball/21530d9a68c714f32be37249dbcd77416c6bcc81",
+                "reference": "21530d9a68c714f32be37249dbcd77416c6bcc81",
                 "shasum": ""
             },
             "type": "library",
@@ -1839,9 +1839,9 @@
             "description": "Shared kernel value objects and domain abstractions",
             "support": {
                 "issues": "https://github.com/schorts99/shared-kernel-php/issues",
-                "source": "https://github.com/schorts99/shared-kernel-php/tree/v0.7.0"
+                "source": "https://github.com/schorts99/shared-kernel-php/tree/v0.7.1"
             },
-            "time": "2026-06-20T13:11:24+00:00"
+            "time": "2026-06-20T19:24:47+00:00"
         }
     ],
     "aliases": [],
