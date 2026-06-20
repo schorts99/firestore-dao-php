@@ -15,9 +15,14 @@
     }
   ],
   "require": {
-    "schorts/shared-kernel": "^0.7.0",
     "google/cloud-core": "^1.72",
     "mjaschen/phpgeo": "^5.0",
     "google/cloud-firestore": "^2.1"
+  },
+  "require-dev": {
+    "schorts/shared-kernel": "^0.7.0"
+  },
+  "suggest": {
+    "schorts/shared-kernel": "Required in consuming apps to provide EntityRegistry and domain contracts"
   }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59dfdc17c1339f7860c5c9d67568e93b",
+    "content-hash": "a0d34c14d6cdc4d04f77ffc344e0c72a",
     "packages": [
         {
             "name": "brick/math",
@@ -1650,43 +1650,6 @@
             "time": "2026-05-07T15:30:40+00:00"
         },
         {
-            "name": "schorts/shared-kernel",
-            "version": "v0.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/schorts99/shared-kernel-php.git",
-                "reference": "44e9ff2a0021b6d304becfaa45569c89bd15d97b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/schorts99/shared-kernel-php/zipball/44e9ff2a0021b6d304becfaa45569c89bd15d97b",
-                "reference": "44e9ff2a0021b6d304becfaa45569c89bd15d97b",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Schorts\\SharedKernel\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jorge Castillo",
-                    "email": "schorts@outlook.com"
-                }
-            ],
-            "description": "Shared kernel value objects and domain abstractions",
-            "support": {
-                "issues": "https://github.com/schorts99/shared-kernel-php/issues",
-                "source": "https://github.com/schorts99/shared-kernel-php/tree/v0.7.0"
-            },
-            "time": "2026-06-20T13:11:24+00:00"
-        },
-        {
             "name": "symfony/deprecation-contracts",
             "version": "v3.7.0",
             "source": {
@@ -1842,7 +1805,45 @@
             "time": "2026-04-10T16:19:22+00:00"
         }
     ],
-    "packages-dev": [],
+    "packages-dev": [
+        {
+            "name": "schorts/shared-kernel",
+            "version": "v0.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/schorts99/shared-kernel-php.git",
+                "reference": "44e9ff2a0021b6d304becfaa45569c89bd15d97b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/schorts99/shared-kernel-php/zipball/44e9ff2a0021b6d304becfaa45569c89bd15d97b",
+                "reference": "44e9ff2a0021b6d304becfaa45569c89bd15d97b",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Schorts\\SharedKernel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jorge Castillo",
+                    "email": "schorts@outlook.com"
+                }
+            ],
+            "description": "Shared kernel value objects and domain abstractions",
+            "support": {
+                "issues": "https://github.com/schorts99/shared-kernel-php/issues",
+                "source": "https://github.com/schorts99/shared-kernel-php/tree/v0.7.0"
+            },
+            "time": "2026-06-20T13:11:24+00:00"
+        }
+    ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {},
