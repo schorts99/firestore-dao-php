@@ -15,7 +15,7 @@
     }
   ],
   "require": {
-    "schorts/shared-kernel": "^0.6.0",
+    "schorts/shared-kernel": "^0.7.0",
     "google/cloud-core": "^1.72",
     "mjaschen/phpgeo": "^5.0",
     "google/cloud-firestore": "^2.1"
