@@ -97,6 +97,21 @@ abstract class FirestoreDAO implements DAO
     return $this->firestoreEntityFactory->fromSnapshots($queryResult->docs());
   }
 
+  public function count(?UnitOfWork $uow = null, bool $includeDeleted = false): int
+  {
+    $query = $this->collection;
+
+    if ($this->deleteMode === DeleteMode::SOFT && !$includeDeleted) {
+        $query = $query->where('is_deleted', '==', false);
+    }
+
+    $snapshot = ($uow instanceof FirestoreTransactionUnitOfWork)
+        ? $uow->getQuery($query)
+        : $query->documents();
+
+    return iterator_count($snapshot);
+  }
+
   public function countBy(Criteria $criteria, ?UnitOfWork $uow = null, bool $includeDeleted = false): int
   {
     if ($this->deleteMode === DeleteMode::SOFT && !$includeDeleted) {
