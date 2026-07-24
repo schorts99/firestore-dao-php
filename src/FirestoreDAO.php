@@ -17,8 +17,9 @@ use Schorts\FirestoreDAO\Entity\EntityFirestoreFactory;
 use Schorts\FirestoreDAO\UnitOfWork\FirestoreTransactionUnitOfWork;
 use Schorts\FirestoreDAO\Query\FirestoreCriteriaQueryExecutor;
 
-abstract class FirestoreDAO extends DAO
+abstract class FirestoreDAO implements DAO
 {
+  private DeleteMode $deleteMode;
   private CollectionReference $collection;
   private FirestoreEntityFactory $firestoreEntityFactory;
   private ?Logger $logger;
@@ -28,8 +29,7 @@ abstract class FirestoreDAO extends DAO
     DeleteMode $deleteMode = DeleteMode::HARD,
     ?Logger $logger = null,
   ) {
-    parent::__construct($deleteMode);
-
+    $this->$deleteMode = $deleteMode;
     $this->collection = $collection;
     $this->firestoreEntityFactory = new FirestoreEntityFactory(
       $collection->id(),
