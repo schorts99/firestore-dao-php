@@ -29,7 +29,7 @@ abstract class FirestoreDAO implements DAO
     DeleteMode $deleteMode = DeleteMode::HARD,
     ?Logger $logger = null,
   ) {
-    $this->$deleteMode = $deleteMode;
+    $this->deleteMode = $deleteMode;
     $this->collection = $collection;
     $this->firestoreEntityFactory = new FirestoreEntityFactory(
       $collection->id(),
