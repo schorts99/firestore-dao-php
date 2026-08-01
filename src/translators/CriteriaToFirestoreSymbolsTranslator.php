@@ -13,7 +13,7 @@ final class CriteriaToFirestoreSymbolsTranslator
 {
   public static function translateOperator(Operator $operator): string
 	{
-		switch ($operator) {
+		switch ($operator->value) {
 			case 'EQUAL':
 				return '==';
 			case 'NOT_EQUAL':
@@ -41,7 +41,7 @@ final class CriteriaToFirestoreSymbolsTranslator
 
 	public static function translateOrderDirection(Direction $order): ?string
 	{
-		switch ($order) {
+		switch ($order->value) {
 			case 'ASC':
 				return 'asc';
 			case 'DESC':
