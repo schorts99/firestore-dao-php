@@ -3,8 +3,7 @@
 namespace Schorts\FirestoreDAO\Formatters;
 
 use Google\Cloud\Core\Timestamp;
-use Location\Coordinate;
-use Location\Utility\Geohash;
+use Sk\Geohash\Geohash;
 use Schorts\SharedKernel\ValueObjects\CoordinatesValue;
 use Schorts\SharedKernel\ValueObjects\DateValue;
 use Schorts\SharedKernel\Formatters\PascalCamelToSnake;
@@ -22,13 +21,17 @@ class PrimitiveTypesToFirestoreFormatter
   private static function formatCoordinates(array $entity): array
   {
     $geoData = [];
+    $geohash = new Geohash();
 
     foreach ($entity as $key => $value) {
       if ($value instanceof CoordinatesValue) {
         $formattedKey = str_starts_with($key, '_') ? substr($key, 1) : $key;
         $snakeKey = PascalCamelToSnake::format($formattedKey);
-        $coordinate = new Coordinate($value->getLatitude(), $value->getLongitude());
-        $geoData[$snakeKey . '_geohash'] = Geohash::encode($coordinate, 12);
+        $geoData[$snakeKey . '_geohash'] = $geohash->encode(
+          $value->getLatitude(),
+          $value->getLongitude(),
+          12
+        );
       }
     }
 

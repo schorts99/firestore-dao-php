@@ -9,7 +9,7 @@ final class EntityFirestoreFactory
 {
   public static function fromEntity(Entity $entity): array
   {
-    $attributes = $entity->toPrimitives()->getAttributes();
+    $attributes = $entity->toPrimitives();
     $formatted = PrimitiveTypesToFirestoreFormatter::format($attributes);
     $raw = array_merge($attributes, $formatted);
 
