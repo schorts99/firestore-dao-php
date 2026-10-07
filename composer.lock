@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fa3f09ead6e0a9f8c21fb7302965222b",
+    "content-hash": "9faa1c9795424ff4faec4023a6862017",
     "packages": [
         {
             "name": "brick/math",
@@ -1629,6 +1629,58 @@
                 }
             ],
             "time": "2026-05-07T15:30:40+00:00"
+        },
+        {
+            "name": "saikiran/geohash",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/skthon/geohash.git",
+                "reference": "d94b00fe45612a10fd125bdaf1506df6d9d205a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/skthon/geohash/zipball/d94b00fe45612a10fd125bdaf1506df6d9d205a9",
+                "reference": "d94b00fe45612a10fd125bdaf1506df6d9d205a9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sk\\Geohash\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Saikiran Ch",
+                    "email": "saikiranchavan@gmail.com"
+                },
+                {
+                    "name": "Chris Raastad",
+                    "email": "craastad@gmail.com"
+                }
+            ],
+            "description": "Geohash Algorithm to encode geographic coordinates to a string of letters and digits",
+            "homepage": "https://github.com/skthon/geohash",
+            "keywords": [
+                "geohash",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/skthon/geohash/issues",
+                "source": "https://github.com/skthon/geohash/tree/master"
+            },
+            "time": "2020-07-25T17:30:48+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
