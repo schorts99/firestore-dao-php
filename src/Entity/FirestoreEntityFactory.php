@@ -3,6 +3,7 @@
 namespace Schorts\FirestoreDAO\Entity;
 
 use Google\Cloud\Firestore\DocumentSnapshot;
+use Schorts\SharedKernel\Entity\Entity;
 use Schorts\SharedKernel\Entity\EntityRegistry;
 use Schorts\SharedKernel\Logger\Logger;
 use Schorts\FirestoreDAO\Formatters\FirestoreTypesToPrimitivesFormatter;
@@ -18,7 +19,7 @@ final class FirestoreEntityFactory
     $this->logger = $logger;
   }
 
-  public function fromSnapshot(DocumentSnapshot $docSnap): ?object
+  public function fromSnapshot(DocumentSnapshot $docSnap): ?Entity
   {
     $this->logger?->debug('[FirestoreEntityFactory fromSnapshot] started', [
       'docSnap' => $docSnap,
@@ -34,10 +35,8 @@ final class FirestoreEntityFactory
       'data' => $data,
     ]);
 
-    $entity = EntityRegistry::fromPrimitives($this->collectionName, array_merge(
-      ['id' => $docSnap->id()],
-      $data,
-    ));
+    $primitives = array_merge(['id' => $docSnap->id()], $data);
+    $entity = EntityRegistry::fromPrimitives($this->collectionName, $primitives);
 
     $this->logger?->debug('[FirestoreEntityFactory fromSnapshot] completed', [
       'entity' => $entity,

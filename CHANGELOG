@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-10-30
+
+### Added
+
+- Comprehensive PHPUnit 13 test suite covering translators, formatters, entity factories, query executor, unit of work runner/transaction, migrators, and full FirestoreDAO CRUD/criteria lifecycle (49 tests, 197 assertions).
+- Added `phpunit.xml` configuration and `test` composer script.
+
+### Changed
+
+- Updated `schorts/shared-kernel` to `^3.0.0`:
+  - Updated `EntityFirestoreFactory::fromEntity()` to use array primitives from `Entity::toPrimitives()`.
+  - Updated `FirestoreEntityFactory::fromSnapshot()` to pass primitive attributes directly to `EntityRegistry::fromPrimitives()`.
+  - Updated `CriteriaToFirestoreSymbolsTranslator` with `match` expressions for `Operator` and `Direction` enums.
+  - Updated `FirestoreCriteriaQueryExecutor` to evaluate `Operator::GEO_RADIUS` against enum and support `UnitOfWork`.
+- Migrated geohash encoding in `PrimitiveTypesToFirestoreFormatter` to use `saikiran/geohash` (`Sk\Geohash\Geohash`).
+
 ## [2.0.0]
 
 ### Changed

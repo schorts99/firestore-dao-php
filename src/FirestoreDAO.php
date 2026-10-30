@@ -79,7 +79,7 @@ abstract class FirestoreDAO implements DAO
     $snapshot = ($uow instanceof FirestoreTransactionUnitOfWork)
       ? $uow->getQuery($query)
       : $query->documents();
-    $docs = iterator_to_array($snapshot);
+    $docs = is_array($snapshot) ? $snapshot : iterator_to_array($snapshot);
 
     return $this->firestoreEntityFactory->fromSnapshots($docs);
   }
@@ -109,7 +109,7 @@ abstract class FirestoreDAO implements DAO
         ? $uow->getQuery($query)
         : $query->documents();
 
-    return iterator_count($snapshot);
+    return is_array($snapshot) ? count($snapshot) : iterator_count($snapshot);
   }
 
   public function countBy(Criteria $criteria, ?UnitOfWork $uow = null, bool $includeDeleted = false): int

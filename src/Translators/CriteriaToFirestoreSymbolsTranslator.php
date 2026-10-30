@@ -12,46 +12,31 @@ use Schorts\SharedKernel\Criteria\Direction;
 final class CriteriaToFirestoreSymbolsTranslator
 {
   public static function translateOperator(Operator $operator): string
-	{
-		switch ($operator->value) {
-			case 'EQUAL':
-				return '==';
-			case 'NOT_EQUAL':
-				return '!=';
-			case 'GREATER_THAN':
-				return '>';
-			case 'GREATER_THAN_OR_EQUAL':
-				return '>=';
-			case 'LESS_THAN':
-				return '<';
-			case 'LESS_THAN_OR_EQUAL':
-				return '<=';
-			case 'IN':
-				return 'in';
-			case 'NOT_IN':
-				return 'not-in';
-			case 'ARRAY_CONTAINS':
-				return 'array-contains';
-			case 'ARRAY_CONTAINS_ANY':
-				return 'array-contains-any';
-			default:
-				throw new OperatorNotValid($operator);
-		}
-	}
+  {
+    return match ($operator) {
+      Operator::EQUAL => '==',
+      Operator::NOT_EQUAL => '!=',
+      Operator::GREATER_THAN => '>',
+      Operator::GREATER_THAN_OR_EQUAL => '>=',
+      Operator::LESS_THAN => '<',
+      Operator::LESS_THAN_OR_EQUAL => '<=',
+      Operator::IN => 'in',
+      Operator::NOT_IN => 'not-in',
+      Operator::ARRAY_CONTAINS => 'array-contains',
+      Operator::ARRAY_CONTAINS_ANY => 'array-contains-any',
+      default => throw new OperatorNotValid($operator),
+    };
+  }
 
-	public static function translateOrderDirection(Direction $order): ?string
-	{
-		switch ($order->value) {
-			case 'ASC':
-				return 'asc';
-			case 'DESC':
-				return 'desc';
-			case 'NONE':
-				return null;
-			default:
-				throw new OrderNotValid($order);
-		}
-	}
+  public static function translateOrderDirection(Direction $order): ?string
+  {
+    return match ($order) {
+      Direction::ASC => 'asc',
+      Direction::DESC => 'desc',
+      Direction::NONE => null,
+      default => throw new OrderNotValid($order),
+    };
+  }
 
 	public static function translateField(string $field): string|FieldPath
 	{

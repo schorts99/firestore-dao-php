@@ -8,6 +8,14 @@
       "Schorts\\FirestoreDAO\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Schorts\\FirestoreDAO\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
   "authors": [
     {
       "name": "Jorge Castillo",
@@ -15,13 +23,14 @@
     }
   ],
   "require": {
-    "google/cloud-core": "^1.73",
-    "mjaschen/phpgeo": "^5.0",
-    "google/cloud-firestore": "^2.3",
-    "saikiran/geohash": "^1.0"
+    "google/cloud-core": "^1.74",
+    "mjaschen/phpgeo": "^6.0.4",
+    "google/cloud-firestore": "^2.4.0",
+    "saikiran/geohash": "^1.0.1"
   },
   "require-dev": {
-    "schorts/shared-kernel": "^2.0"
+    "schorts/shared-kernel": "^3.0.0",
+    "phpunit/phpunit": "^13.4"
   },
   "suggest": {
     "schorts/shared-kernel": "Required in consuming apps to provide EntityRegistry and domain contracts"

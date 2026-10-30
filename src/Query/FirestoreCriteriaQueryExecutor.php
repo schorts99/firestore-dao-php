@@ -4,7 +4,9 @@ namespace Schorts\FirestoreDAO\Query;
 
 use Google\Cloud\Firestore\CollectionReference;
 use Schorts\SharedKernel\Criteria\Criteria;
+use Schorts\SharedKernel\Criteria\Operator;
 use Schorts\SharedKernel\Logger\Logger;
+use Schorts\SharedKernel\UnitOfWork\UnitOfWork;
 use Schorts\FirestoreDAO\Translators\CriteriaToFirestoreSymbolsTranslator;
 use Schorts\FirestoreDAO\Query\QueryResult;
 use Schorts\FirestoreDAO\UnitOfWork\FirestoreTransactionUnitOfWork;
@@ -16,13 +18,13 @@ final class FirestoreCriteriaQueryExecutor
   public static function execute(
     CollectionReference $collection,
     Criteria $criteria,
-    ?FirestoreTransactionUnitOfWork $uow = null,
+    ?UnitOfWork $uow = null,
     ?Logger $logger = null
   ): QueryResult {
     $geoFilter = null;
 
     foreach ($criteria->filters() as $f) {
-      if ($f->operator === 'GEO_RADIUS') {
+      if ($f->operator === Operator::GEO_RADIUS) {
         $geoFilter = $f;
 
         break;
@@ -64,7 +66,7 @@ final class FirestoreCriteriaQueryExecutor
         $query = $query->limit($criteria->limit());
       }
 
-      $snapshot = $uow ? $uow->getQuery($query) : $query->documents();
+      $snapshot = ($uow instanceof FirestoreTransactionUnitOfWork) ? $uow->getQuery($query) : $query->documents();
       $filteredDocs = [];
       $distanceCalc = new Vincenty();
 
@@ -107,12 +109,12 @@ final class FirestoreCriteriaQueryExecutor
       $query = $query->limit($criteria->limit());
     }
 
-    if ($criteria->offset()) {
+    if ($criteria->offset() !== null && $criteria->offset() > 0) {
       $query = $query->offset($criteria->offset());
     }
 
-    $snapshot = $uow ? $uow->getQuery($query) : $query->documents();
+    $snapshot = ($uow instanceof FirestoreTransactionUnitOfWork) ? $uow->getQuery($query) : $query->documents();
 
-    return new QueryResult(iterator_to_array($snapshot));
+    return new QueryResult(is_array($snapshot) ? $snapshot : iterator_to_array($snapshot));
   }
 }
