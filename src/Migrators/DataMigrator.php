@@ -3,6 +3,7 @@
 namespace Schorts\FirestoreDAO\Migrators;
 
 use Google\Cloud\Firestore\CollectionReference;
+use Schorts\FirestoreDAO\Formatters\FirestoreUpdateFormatter;
 use Schorts\SharedKernel\Logger\Logger;
 
 final class DataMigrator
@@ -39,7 +40,7 @@ final class DataMigrator
       }
 
       if (!empty($newData)) {
-        $doc->reference()->update($newData);
+        $doc->reference()->update(FirestoreUpdateFormatter::format($newData));
       }
     }
 

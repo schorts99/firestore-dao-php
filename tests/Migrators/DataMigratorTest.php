@@ -7,6 +7,7 @@ namespace Schorts\FirestoreDAO\Tests\Migrators;
 use Google\Cloud\Firestore\CollectionReference;
 use Google\Cloud\Firestore\DocumentReference;
 use Google\Cloud\Firestore\DocumentSnapshot;
+use Google\Cloud\Firestore\FieldPath;
 use PHPUnit\Framework\TestCase;
 use Schorts\FirestoreDAO\Migrators\DataMigrator;
 use Schorts\SharedKernel\Logger\InMemoryLogger;
@@ -20,8 +21,8 @@ final class DataMigratorTest extends TestCase
     $ref1->expects($this->once())
       ->method('update')
       ->with([
-        'is_deleted' => false,
-        'deleted_at' => null,
+        ['path' => new FieldPath(['is_deleted']), 'value' => false],
+        ['path' => new FieldPath(['deleted_at']), 'value' => null],
       ]);
     $doc1 = $this->createStub(DocumentSnapshot::class);
     $doc1->method('data')->willReturn(['name' => 'Doc 1']);
@@ -43,7 +44,7 @@ final class DataMigratorTest extends TestCase
     $ref3->expects($this->once())
       ->method('update')
       ->with([
-        'deleted_at' => null,
+        ['path' => new FieldPath(['deleted_at']), 'value' => null],
       ]);
     $doc3 = $this->createStub(DocumentSnapshot::class);
     $doc3->method('data')->willReturn([

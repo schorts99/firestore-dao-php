@@ -6,6 +6,7 @@ namespace Schorts\FirestoreDAO\Tests\UnitOfWork;
 
 use Google\Cloud\Firestore\DocumentReference;
 use Google\Cloud\Firestore\DocumentSnapshot;
+use Google\Cloud\Firestore\FieldPath;
 use Google\Cloud\Firestore\Query;
 use Google\Cloud\Firestore\QuerySnapshot;
 use Google\Cloud\Firestore\Transaction;
@@ -91,16 +92,17 @@ final class FirestoreTransactionUnitOfWorkTest extends TestCase
   public function testCreateUpdateDeleteOperations(): void
   {
     $docRef = $this->createStub(DocumentReference::class);
-    $data = ['field' => 'value'];
+    $data = ['integrations' => ['spotify' => ['access_token' => 'refreshed-token']]];
+    $updates = [['path' => new FieldPath(['integrations']), 'value' => $data['integrations']]];
 
     $transaction = $this->createMock(Transaction::class);
     $transaction->expects($this->once())->method('create')->with($docRef, $data);
-    $transaction->expects($this->once())->method('update')->with($docRef, $data);
+    $transaction->expects($this->once())->method('update')->with($docRef, $this->identicalTo($updates));
     $transaction->expects($this->once())->method('delete')->with($docRef);
 
     $uow = new FirestoreTransactionUnitOfWork($transaction);
     $uow->create($docRef, $data);
-    $uow->update($docRef, $data);
+    $uow->update($docRef, $updates);
     $uow->delete($docRef);
   }
 }

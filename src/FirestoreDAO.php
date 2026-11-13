@@ -14,6 +14,7 @@ use Schorts\SharedKernel\DAO\Exceptions\EntityNotRecoverable;
 
 use Schorts\FirestoreDAO\Entity\FirestoreEntityFactory;
 use Schorts\FirestoreDAO\Entity\EntityFirestoreFactory;
+use Schorts\FirestoreDAO\Formatters\FirestoreUpdateFormatter;
 use Schorts\FirestoreDAO\UnitOfWork\FirestoreTransactionUnitOfWork;
 use Schorts\FirestoreDAO\Query\FirestoreCriteriaQueryExecutor;
 
@@ -150,9 +151,11 @@ abstract class FirestoreDAO implements DAO
       $data['deleted_at'] = null;
     }
 
+    $updates = FirestoreUpdateFormatter::format($data);
+
     ($uow instanceof FirestoreTransactionUnitOfWork)
-      ? $uow->update($docRef, $data)
-      : $docRef->update($data);
+      ? $uow->update($docRef, $updates)
+      : $docRef->update($updates);
 
     return $entity;
   }
@@ -169,10 +172,11 @@ abstract class FirestoreDAO implements DAO
       $data = EntityFirestoreFactory::fromEntity($entity);
       $data['is_deleted'] = true;
       $data['deleted_at'] = new \DateTimeImmutable();
+      $updates = FirestoreUpdateFormatter::format($data);
 
       ($uow instanceof FirestoreTransactionUnitOfWork)
-        ? $uow->update($docRef, $data)
-        : $docRef->update($data);
+        ? $uow->update($docRef, $updates)
+        : $docRef->update($updates);
     }
 
     return $entity;
@@ -218,10 +222,11 @@ abstract class FirestoreDAO implements DAO
     $data = EntityFirestoreFactory::fromEntity($entity);
     $data['is_deleted'] = false;
     $data['deleted_at'] = null;
+    $updates = FirestoreUpdateFormatter::format($data);
 
     ($uow instanceof FirestoreTransactionUnitOfWork)
-      ? $uow->update($docRef, $data)
-      : $docRef->update($data);
+      ? $uow->update($docRef, $updates)
+      : $docRef->update($updates);
 
     return $entity;
   }

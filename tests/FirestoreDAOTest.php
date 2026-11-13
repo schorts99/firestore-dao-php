@@ -8,7 +8,11 @@ use DateTime;
 use Google\Cloud\Firestore\CollectionReference;
 use Google\Cloud\Firestore\DocumentReference;
 use Google\Cloud\Firestore\DocumentSnapshot;
+use Google\Cloud\Firestore\FieldPath;
 use Google\Cloud\Firestore\Query;
+use Google\Cloud\Firestore\Transaction;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Schorts\FirestoreDAO\FirestoreDAO;
 use Schorts\FirestoreDAO\UnitOfWork\FirestoreTransactionUnitOfWork;
@@ -263,10 +267,10 @@ final class FirestoreDAOTest extends TestCase
     $docRef->expects($this->once())
       ->method('update')
       ->with([
-        'name' => 'Twelve',
-        'email' => 'twelve@test.com',
-        'is_deleted' => false,
-        'deleted_at' => null,
+        ['path' => new FieldPath(['name']), 'value' => 'Twelve'],
+        ['path' => new FieldPath(['email']), 'value' => 'twelve@test.com'],
+        ['path' => new FieldPath(['is_deleted']), 'value' => false],
+        ['path' => new FieldPath(['deleted_at']), 'value' => null],
       ]);
 
     $collection = $this->createMock(CollectionReference::class);
@@ -310,9 +314,14 @@ final class FirestoreDAOTest extends TestCase
     $docRef->expects($this->once())
       ->method('update')
       ->with($this->callback(function (array $data) {
-        return $data['is_deleted'] === true
-          && $data['deleted_at'] instanceof \DateTimeImmutable
-          && $data['name'] === 'Fourteen';
+        $this->assertInstanceOf(\DateTimeImmutable::class, $data[3]['value']);
+
+        return $this->assertUpdatePayload([
+          'name' => 'Fourteen',
+          'email' => '14@test.com',
+          'is_deleted' => true,
+          'deleted_at' => $data[3]['value'],
+        ], $data);
       }));
 
     $collection = $this->createMock(CollectionReference::class);
@@ -383,7 +392,11 @@ final class FirestoreDAOTest extends TestCase
     $docRef->method('snapshot')->willReturn($docSnap);
     $docRef->expects($this->once())
       ->method('update')
-      ->with($this->callback(fn ($d) => $d['name'] === 'Seventeen Updated'));
+      ->with([
+        ['path' => new FieldPath(['name']), 'value' => 'Seventeen Updated'],
+        ['path' => new FieldPath(['email']), 'value' => '17@test.com'],
+        ['path' => new FieldPath(['is_deleted']), 'value' => false],
+      ]);
 
     $collection = $this->createStub(CollectionReference::class);
     $collection->method('id')->willReturn('users');
@@ -443,10 +456,10 @@ final class FirestoreDAOTest extends TestCase
     $docRef->expects($this->once())
       ->method('update')
       ->with([
-        'name' => 'Twenty One',
-        'email' => '21@test.com',
-        'is_deleted' => false,
-        'deleted_at' => null,
+        ['path' => new FieldPath(['name']), 'value' => 'Twenty One'],
+        ['path' => new FieldPath(['email']), 'value' => '21@test.com'],
+        ['path' => new FieldPath(['is_deleted']), 'value' => false],
+        ['path' => new FieldPath(['deleted_at']), 'value' => null],
       ]);
 
     $collection = $this->createStub(CollectionReference::class);
@@ -457,6 +470,118 @@ final class FirestoreDAOTest extends TestCase
     $restored = $dao->restore($entity);
 
     $this->assertSame($entity, $restored);
+  }
+
+  public static function updateWritePaths(): iterable
+  {
+    foreach ([false, true] as $transactional) {
+      $prefix = $transactional ? 'transactional ' : 'direct ';
+      yield $prefix . 'hard-mode update' => ['update', DeleteMode::HARD, $transactional];
+      yield $prefix . 'soft-mode update' => ['update', DeleteMode::SOFT, $transactional];
+      yield $prefix . 'soft delete' => ['delete', DeleteMode::SOFT, $transactional];
+      yield $prefix . 'restore' => ['restore', DeleteMode::SOFT, $transactional];
+    }
+  }
+
+  #[DataProvider('updateWritePaths')]
+  public function testUpdateWritesPreserveNestedCredentialsAndLiteralFieldNames(
+    string $operation,
+    DeleteMode $deleteMode,
+    bool $transactional
+  ): void {
+    $entity = new class(new UserIdVo('u-credentials'), 'Listener', 'listener@test.com') extends UserTestEntity {
+      public function toPrimitives(): array
+      {
+        return array_merge(parent::toPrimitives(), [
+          'integrations' => [
+            'spotify' => [
+              'access_token' => 'refreshed-access-token',
+              'refresh_token' => 'refreshed-refresh-token',
+              'expires_at' => 1800000000,
+              'scopes' => ['user-read-playback-state', 'user-modify-playback-state'],
+              'metadata' => ['optional' => null, 'enabled' => false],
+            ],
+          ],
+          'settings.with.dots' => ['literal.key' => 'unchanged'],
+          'special*field/with[brackets]~and`tick\\' => [],
+          '0' => 'numeric field name',
+        ]);
+      }
+    };
+    $expected = $entity->toPrimitives();
+    unset($expected['id']);
+    if ($deleteMode === DeleteMode::SOFT) {
+      $expected['is_deleted'] = $operation === 'delete';
+      $expected['deleted_at'] = null;
+    }
+
+    $docRef = $this->createMock(DocumentReference::class);
+    $transaction = $transactional ? $this->createMock(Transaction::class) : null;
+    $payload = $this->callback(function (array $data) use ($expected, $operation) {
+      if ($operation === 'delete') {
+        $deletedAt = $data[array_key_last($data)]['value'];
+        $this->assertInstanceOf(\DateTimeImmutable::class, $deletedAt);
+        $expected['deleted_at'] = $deletedAt;
+      }
+
+      return $this->assertUpdatePayload($expected, $data);
+    });
+
+    if ($transactional) {
+      $docRef->expects($this->never())->method('update');
+      $transaction->expects($this->once())->method('update')->with($docRef, $payload);
+    } else {
+      $docRef->expects($this->once())->method('update')->with($payload);
+    }
+
+    $collection = $this->createStub(CollectionReference::class);
+    $collection->method('id')->willReturn('users');
+    $collection->method('document')->willReturn($docRef);
+    $dao = new ConcreteUserDAO($collection, $deleteMode);
+    $uow = $transactional ? new FirestoreTransactionUnitOfWork($transaction) : null;
+
+    $this->assertSame($entity, $dao->$operation($entity, $uow));
+  }
+
+  #[TestWith([false])]
+  #[TestWith([true])]
+  public function testUpdateWriteErrorsPropagate(bool $transactional): void
+  {
+    $entity = new UserTestEntity(new UserIdVo('u-error'), 'Listener', 'listener@test.com');
+    $error = new \RuntimeException('Persistence failed');
+    $docRef = $this->createMock(DocumentReference::class);
+    $transaction = $transactional ? $this->createMock(Transaction::class) : null;
+
+    if ($transactional) {
+      $docRef->expects($this->never())->method('update');
+      $transaction->expects($this->once())->method('update')->willThrowException($error);
+    } else {
+      $docRef->expects($this->once())->method('update')->willThrowException($error);
+    }
+
+    $collection = $this->createStub(CollectionReference::class);
+    $collection->method('id')->willReturn('users');
+    $collection->method('document')->willReturn($docRef);
+    $dao = new ConcreteUserDAO($collection, DeleteMode::HARD);
+    $uow = $transactional ? new FirestoreTransactionUnitOfWork($transaction) : null;
+
+    $this->expectExceptionObject($error);
+    $dao->update($entity, $uow);
+  }
+
+  private function assertUpdatePayload(array $expected, array $actual): bool
+  {
+    $this->assertTrue(array_is_list($actual));
+    $this->assertCount(count($expected), $actual);
+
+    foreach (array_keys($expected) as $index => $field) {
+      $this->assertSame(['path', 'value'], array_keys($actual[$index]));
+      $this->assertInstanceOf(FieldPath::class, $actual[$index]['path']);
+      $this->assertSame([$field], $actual[$index]['path']->path());
+      $this->assertSame($expected[$field], $actual[$index]['value']);
+    }
+
+    return true;
   }
 
   public function testCountCountsDocuments(): void

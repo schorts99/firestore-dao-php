@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2026-11-13
+
+### Fixed
+
+- Fixed invalid Firestore update payloads for DAO updates, soft deletes, restores, and hard-to-soft-delete migrations by converting field maps to the SDK's required path/value lists, including transactional DAO writes.
+- Preserved literal field names (including dots and special characters) and nested values such as refreshed integration credentials using `FirestoreUpdateFormatter`. Create payloads and the transaction wrapper's SDK-native update API remain unchanged.
+
+### Added
+
+- Regression tests for direct and transactional update payloads, nested credentials, literal field names, and write-error propagation.
+
 ## [3.0.0] - 2026-10-30
 
 ### Added
